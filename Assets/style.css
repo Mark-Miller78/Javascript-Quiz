@@ -1,0 +1,48 @@
+:root{
+    --background-color:#4A6274;
+    --txt-color: #E2725A;
+}
+
+*{
+    background-color: var(--background-color);
+    color: var(--txt-color);
+}
+header{
+    font-size: 25px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+}
+header a{
+    align-self:center;
+}
+
+main{
+    display:flex;
+    flex-direction: column;
+}
+.landingText{
+    display: flex;
+    flex-direction: column;
+}
+
+h1{
+    width: 100%;
+    text-align: center;
+    font-size: 50px;
+}
+
+main p{
+    width: 40%;
+    text-align: center;
+    margin: 10px auto;
+    font-size: 20px
+}
+button{
+    background-color: var(--txt-color);
+    color: var(--background-color);
+    width: auto;
+    margin: 15px auto;
+    padding: 10px;
+}

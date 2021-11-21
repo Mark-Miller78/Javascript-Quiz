@@ -98,8 +98,14 @@ let questions = [
 
 var startBtnEl = document.querySelector('#start-btn');
 var timerEl = document.querySelector('.timer');
-var landingEl = document.querySelector('.landingText')
+// var landingEl = document.querySelector('.landingText')
 var quiz = document.getElementById('quiz');
+var questionBlock= document.getElementById('questionBlock');
+var startText = document.getElementById('startText');
+var buttons = document.getElementById('btnBlock')
+var choicesEl = document.getElementsByClassName('.answerChoices');
+var currentQuestion = 0
+
 
 function countdown() {
     var timeLeft = 75;
@@ -113,19 +119,33 @@ function countdown() {
             clearInterval(timeInterval);
         }
     },1000);
-}
-function askQuestions(){
-    for(var i = 0; i < questions.length; i++){
-        var questionEl = document.createElement('h1');
-        questionEl.textContent =questions[i].question;
-
-        quiz.appendChild(questionEl);
-    }
 };
+function formQuestion(){
+    // var questionEl= document.createElement('p')
+    startText.textContent = questions[currentQuestion].question;
+    // questionBlock.appendChild(questionEl);
+
+    for( var i=0; i<questions[currentQuestion].options.length; i++){
+        var btnOptions = document.createElement('button')
+        btnOptions.textContent = questions[currentQuestion].options[i];
+        btnOptions.className="answerChoices";
+
+        btnBlock.appendChild(btnOptions);
+    }
+    
+    currentQuestion++;
+
+}
+
 
 startBtnEl.addEventListener("click", function(){
-    landingEl.setAttribute("style", "display:none");
+    startBtnEl.setAttribute("style", "display: none");
     countdown();
-    askQuestions();
+    formQuestion();
 });
+
+
+
+
+
 

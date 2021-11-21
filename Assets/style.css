@@ -39,10 +39,21 @@ main p{
     margin: 10px auto;
     font-size: 20px
 }
+#btnBlock{
+    display: flex;
+    flex-direction: column;
+}
 button{
     background-color: var(--txt-color);
     color: var(--background-color);
     width: auto;
     margin: 15px auto;
+    padding: 10px;
+}
+.answerChoices{
+    background-color: var(--txt-color);
+    color: var(--background-color);
+    width: 50%;
+    margin: 5px auto;
     padding: 10px;
 }

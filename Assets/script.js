@@ -78,7 +78,7 @@ let questions = [
     {
         question: "True or False: The first index in an array is given a value of 1.",
         answer: "False",
-        Options:[
+        options:[
             "True",
             "False",
         ]
@@ -103,12 +103,15 @@ var quiz = document.getElementById('quiz');
 var questionBlock= document.getElementById('questionBlock');
 var startText = document.getElementById('startText');
 var buttons = document.getElementById('btnBlock')
-var choicesEl = document.getElementsByClassName('.answerChoices');
+// var choicesEl = document.getElementsByClassName('.answerChoices');
+var timeLeft = 75
 var currentQuestion = 0
+var choicesIdCounter = 0
+var correctQuestions = 0
+var score = 0
 
 
 function countdown() {
-    var timeLeft = 75;
 
     var timeInterval = setInterval(function(){
         if (timeLeft >= 0){
@@ -117,9 +120,11 @@ function countdown() {
         }
         else{
             clearInterval(timeInterval);
+            endQuiz();
         }
     },1000);
 };
+
 function formQuestion(){
     // var questionEl= document.createElement('p')
     startText.textContent = questions[currentQuestion].question;
@@ -129,13 +134,42 @@ function formQuestion(){
         var btnOptions = document.createElement('button')
         btnOptions.textContent = questions[currentQuestion].options[i];
         btnOptions.className="answerChoices";
+        btnOptions.setAttribute('data-choices-Id', choicesIdCounter);
 
         btnBlock.appendChild(btnOptions);
     }
-    
+
+    choicesIdCounter++;
     currentQuestion++;
 
 }
+
+function endQuiz(){
+    score = correctQuestions*10;
+
+    startText.textContent = "Time is up! lets see how you did!";
+
+    while (buttons.firstChild){
+        buttons.removeChild(buttons.firstChild);
+    }
+
+    var scoreResults = document.createElement("p");
+    var endBtn = document.createElement("button");
+
+    if(score > 0){
+        scoreResults.textContent = "Congrats! you scored a total of " + score + " Points! Click the button below to save your score!"
+        endBtn.textContent = "Click here to save your score!"
+    } else{
+        scoreResults.textContent= "Sorry! You did not score any points. Click the button below if you would like to try again!"
+        endBtn.textContent = "Click here to restart the quiz"
+    }
+
+    btnBlock.appendChild(endBtn);
+    questionBlock.appendChild(scoreResults);
+    
+
+    
+};
 
 
 startBtnEl.addEventListener("click", function(){
@@ -143,6 +177,22 @@ startBtnEl.addEventListener("click", function(){
     countdown();
     formQuestion();
 });
+
+buttons.addEventListener("click", event =>{
+    var index= currentQuestion - 1;
+
+    if(event.target.textContent === questions[index].answer){
+        correctQuestions++;
+        console.log(correctQuestions);
+    };
+
+    if(event.target.className === "answerChoices"){
+        while (buttons.firstChild){
+            buttons.removeChild(buttons.firstChild);
+        }
+        formQuestion();
+    }
+} );
 
 
 

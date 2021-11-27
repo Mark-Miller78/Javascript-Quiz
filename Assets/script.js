@@ -100,15 +100,17 @@ var startBtnEl = document.querySelector('#start-btn');
 var timerEl = document.querySelector('.timer');
 // var landingEl = document.querySelector('.landingText')
 var quiz = document.getElementById('quiz');
-var questionBlock= document.getElementById('questionBlock');
+var questionText= document.getElementById('questionText');
 var startText = document.getElementById('startText');
 var buttons = document.getElementById('btnBlock')
 // var choicesEl = document.getElementsByClassName('.answerChoices');
 var timeLeft = 75
 var currentQuestion = 0
 var choicesIdCounter = 0
+var questionsAnswered=0
 var correctQuestions = 0
-var score = 0
+var currentScore = 0
+var savedScores =[]
 
 
 function countdown() {
@@ -122,7 +124,7 @@ function countdown() {
             clearInterval(timeInterval);
             endQuiz();
         }
-    },1000);
+    },100);
 };
 
 function formQuestion(){
@@ -144,10 +146,30 @@ function formQuestion(){
 
 }
 
-function endQuiz(){
-    score = correctQuestions*10;
+function saveScore(){
+    var saveBtn = document.querySelector(".saveBtn");
+    var initialsEl = document.querySelector(".initialInput").value;
 
-    startText.textContent = "Time is up! lets see how you did!";
+    saveBtn.addEventListener("click", function(){
+        if (!initialsEl){
+            alert("Please enter your initials in order to save your score.");
+        }
+        else{
+            var scoreObj={
+                initials: initialsEl,
+                score: currentScore,
+            }
+            savedScores.push(scoreObj);
+            localStorage.setItem("scores", JSON.stringify(savedScores))
+         }
+    });
+
+}
+
+function endQuiz(){
+    currentScore = correctQuestions*10;
+
+    // startText.textContent = "The quiz is over! lets see how you did!";
 
     while (buttons.firstChild){
         buttons.removeChild(buttons.firstChild);
@@ -156,16 +178,31 @@ function endQuiz(){
     var scoreResults = document.createElement("p");
     var endBtn = document.createElement("button");
 
-    if(score > 0){
-        scoreResults.textContent = "Congrats! you scored a total of " + score + " Points! Click the button below to save your score!"
+    if(currentScore > 0){
+        startText.textContent = "Congrats! you scored a total of " + currentScore + " Points! Enter your initials and click the button below to save your score!"
+        
+        var initialEl = document.createElement("input");
+        initialEl.className = "initialInput";
+        initialEl.setAttribute("type", "text");
+        initialEl.placeholder= "Enter Initials Here";
+        questionText.appendChild(initialEl);
+        
         endBtn.textContent = "Click here to save your score!"
+        endBtn.className = "saveBtn"
+        endBtn.onclick = function(){
+            saveScore();
+        }
     } else{
-        scoreResults.textContent= "Sorry! You did not score any points. Click the button below if you would like to try again!"
+        startText.textContent= "Sorry! You did not score any points. Click the button below if you would like to try again!"
         endBtn.textContent = "Click here to restart the quiz"
+        endBtn.className = "restartBtn"
+        endBtn.onclick = function(){
+            window.location.reload();
+        };
     }
 
     btnBlock.appendChild(endBtn);
-    questionBlock.appendChild(scoreResults);
+    // questionText.appendChild(scoreResults);
     
 
     
@@ -180,19 +217,22 @@ startBtnEl.addEventListener("click", function(){
 
 buttons.addEventListener("click", event =>{
     var index= currentQuestion - 1;
+    
 
     if(event.target.textContent === questions[index].answer){
         correctQuestions++;
         console.log(correctQuestions);
     };
 
+   
     if(event.target.className === "answerChoices"){
         while (buttons.firstChild){
             buttons.removeChild(buttons.firstChild);
         }
+        questionsAnswered++;
         formQuestion();
-    }
-} );
+    };   
+});
 
 
 

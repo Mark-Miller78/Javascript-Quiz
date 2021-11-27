@@ -57,3 +57,14 @@ button{
     margin: 5px auto;
     padding: 10px;
 }
+.initialInput{
+    background-color: var(--txt-color);
+    color: var(--background-color);
+    margin: 10px auto;
+    padding: 5px;
+    text-align:center;
+}
+#questionText{
+    display: flex;
+    flex-direction: column;
+}

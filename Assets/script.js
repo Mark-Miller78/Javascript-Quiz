@@ -98,29 +98,30 @@ let questions = [
 
 var startBtnEl = document.querySelector('#start-btn');
 var timerEl = document.querySelector('.timer');
-// var landingEl = document.querySelector('.landingText')
-var quiz = document.getElementById('quiz');
 var questionText= document.getElementById('questionText');
 var startText = document.getElementById('startText');
-var buttons = document.getElementById('btnBlock')
-// var choicesEl = document.getElementsByClassName('.answerChoices');
+var buttons = document.getElementById('btnBlock');
+// var saveScoreBtn =document.querySelector(".saveBtn");
+// var initialsEl = document.querySelector(".initialInput");
 var timeLeft = 75
 var currentQuestion = 0
 var choicesIdCounter = 0
 var questionsAnswered=0
 var correctQuestions = 0
 var currentScore = 0
-var savedScores =[]
+var savedScores = JSON.parse(localStorage.getItem("highscores")) || [];
+
+const MaxQuestions = 10;
+const MaxHighScores = 5;
 
 
 function countdown() {
 
-    var timeInterval = setInterval(function(){
-        if (timeLeft >= 0){
-            timerEl.textContent="Time Remaining: " + timeLeft + "s";
-            timeLeft--;
-        }
-        else{
+    var timeInterval = setInterval(function(){      
+        timerEl.textContent="Time Remaining: " + timeLeft + "s";
+        timeLeft--;
+        
+        if(timeLeft < 0 || questionsAnswered >= MaxQuestions){
             clearInterval(timeInterval);
             endQuiz();
         }
@@ -129,6 +130,9 @@ function countdown() {
 
 function formQuestion(){
     // var questionEl= document.createElement('p')
+
+
+
     startText.textContent = questions[currentQuestion].question;
     // questionBlock.appendChild(questionEl);
 
@@ -147,27 +151,23 @@ function formQuestion(){
 }
 
 function saveScore(){
-    var saveBtn = document.querySelector(".saveBtn");
-    var initialsEl = document.querySelector(".initialInput").value;
+    var initialValue = document.querySelector(".initialInput").value;
 
-    saveBtn.addEventListener("click", function(){
-        if (!initialsEl){
-            alert("Please enter your initials in order to save your score.");
-        }
-        else{
-            var scoreObj={
-                initials: initialsEl,
-                score: currentScore,
-            }
-            savedScores.push(scoreObj);
-            localStorage.setItem("scores", JSON.stringify(savedScores))
-         }
-    });
+    var score= {
+        score: currentScore,
+        initials: initialValue,
+    };
 
-}
+    savedScores.push(score);
+    savedScores.sort((a, b) => b.score - a.score)
+    savedScores.splice(5);
+
+    console.log(savedScores);
+    localStorage.setItem("highScores", JSON.stringify(savedScores));
+};
 
 function endQuiz(){
-    currentScore = correctQuestions*10;
+    currentScore = (correctQuestions*10)+(timeLeft+1);
 
     // startText.textContent = "The quiz is over! lets see how you did!";
 
@@ -175,37 +175,46 @@ function endQuiz(){
         buttons.removeChild(buttons.firstChild);
     }
 
-    var scoreResults = document.createElement("p");
     var endBtn = document.createElement("button");
 
     if(currentScore > 0){
         startText.textContent = "Congrats! you scored a total of " + currentScore + " Points! Enter your initials and click the button below to save your score!"
         
+        var formEl = document.createElement("form");
+
         var initialEl = document.createElement("input");
         initialEl.className = "initialInput";
         initialEl.setAttribute("type", "text");
         initialEl.placeholder= "Enter Initials Here";
-        questionText.appendChild(initialEl);
+        formEl.appendChild(initialEl);
+        
         
         endBtn.textContent = "Click here to save your score!"
         endBtn.className = "saveBtn"
+        endBtn.setAttribute("type", "button")
+        formEl.appendChild(endBtn);
+
+        questionText.appendChild(formEl);
+
         endBtn.onclick = function(){
-            saveScore();
-        }
+            if(!initialEl.value){
+                window.alert("Please Enter your initials to save your score");
+            }
+            else{
+                saveScore();
+            };
+        };
+
     } else{
         startText.textContent= "Sorry! You did not score any points. Click the button below if you would like to try again!"
         endBtn.textContent = "Click here to restart the quiz"
         endBtn.className = "restartBtn"
+        btnBlock.appendChild(endBtn);
+
         endBtn.onclick = function(){
             window.location.reload();
         };
     }
-
-    btnBlock.appendChild(endBtn);
-    // questionText.appendChild(scoreResults);
-    
-
-    
 };
 
 
@@ -233,9 +242,5 @@ buttons.addEventListener("click", event =>{
         formQuestion();
     };   
 });
-
-
-
-
 
 

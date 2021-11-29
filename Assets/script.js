@@ -175,7 +175,7 @@ function endQuiz(){
     while (buttons.firstChild){
         buttons.removeChild(buttons.firstChild);
     }
-    landingTextEl.removeChild(landingTextEl.lastChild);
+    // landingTextEl.removeChild(landingTextEl.lastChild);
 
     var endBtn = document.createElement("button");
 

@@ -7,6 +7,7 @@
     background-color: var(--background-color);
     color: var(--txt-color);
 }
+
 header{
     font-size: 25px;
     padding: 15px;
@@ -14,6 +15,7 @@ header{
     justify-content: space-between;
     align-content: center;
 }
+
 header a{
     align-self:center;
 }
@@ -22,6 +24,7 @@ main{
     display:flex;
     flex-direction: column;
 }
+
 .landingText{
     display: flex;
     flex-direction: column;
@@ -39,10 +42,17 @@ main p{
     margin: 10px auto;
     font-size: 20px
 }
+
+#questionText{
+    display: flex;
+    flex-direction: column;
+}
+
 #btnBlock{
     display: flex;
     flex-direction: column;
 }
+
 button{
     background-color: var(--txt-color);
     color: var(--background-color);
@@ -50,6 +60,7 @@ button{
     margin: 15px auto;
     padding: 10px;
 }
+
 .answerChoices{
     background-color: var(--txt-color);
     color: var(--background-color);
@@ -57,6 +68,22 @@ button{
     margin: 5px auto;
     padding: 10px;
 }
+
+.result{
+    border-top: 3px solid var(--txt-color);
+    padding-top: 10px;
+    width: 50%;
+    margin-top: 30px;
+    text-align: left;
+    font-size: 25px;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+}
+
 .initialInput{
     background-color: var(--txt-color);
     color: var(--background-color);
@@ -64,12 +91,19 @@ button{
     padding: 5px;
     text-align:center;
 }
-#questionText{
-    display: flex;
-    flex-direction: column;
+
+#hsText{
+    border-bottom: 7px solid var(--txt-color);
+    width: 50%;
+    margin: 40px auto;
+    padding-bottom: 10px;
 }
-form{
-    display: flex;
-    flex-direction: column;
-    align-content: center;
+
+#topScores{
+    list-style: none;
+    padding-left: 0;
+}
+
+.scoreLi p{
+    font-size: 30px;
 }

@@ -1,3 +1,4 @@
+//Questions, Answer Choices, and correct answer are held in an array
 let questions = [
     {
         question: "Inside which HTML element do we put the JavaScript?",
@@ -96,68 +97,68 @@ let questions = [
     }
 ];
 
+var landingTextEl = document.querySelector(".landingText");
 var startBtnEl = document.querySelector('#start-btn');
 var timerEl = document.querySelector('.timer');
 var questionText= document.getElementById('questionText');
 var startText = document.getElementById('startText');
 var buttons = document.getElementById('btnBlock');
-// var saveScoreBtn =document.querySelector(".saveBtn");
-// var initialsEl = document.querySelector(".initialInput");
 var timeLeft = 75
 var currentQuestion = 0
-var choicesIdCounter = 0
+// var choicesIdCounter = 0
 var questionsAnswered=0
 var correctQuestions = 0
 var currentScore = 0
-var savedScores = JSON.parse(localStorage.getItem("highscores")) || [];
+var savedScores = JSON.parse(localStorage.getItem("highScores")) || [];
 
 const MaxQuestions = 10;
 const MaxHighScores = 5;
 
-
+//function for timer
 function countdown() {
 
     var timeInterval = setInterval(function(){      
         timerEl.textContent="Time Remaining: " + timeLeft + "s";
         timeLeft--;
         
+        //Quiz ends if time runs out or all questions answered
         if(timeLeft < 0 || questionsAnswered >= MaxQuestions){
             clearInterval(timeInterval);
             endQuiz();
         }
-    },100);
+    },1000);
 };
 
 function formQuestion(){
-    // var questionEl= document.createElement('p')
-
-
-
+    //sets text to current question being asked
     startText.textContent = questions[currentQuestion].question;
-    // questionBlock.appendChild(questionEl);
 
+    //creates answer choice buttons that goes with current question and displays them
     for( var i=0; i<questions[currentQuestion].options.length; i++){
         var btnOptions = document.createElement('button')
         btnOptions.textContent = questions[currentQuestion].options[i];
         btnOptions.className="answerChoices";
-        btnOptions.setAttribute('data-choices-Id', choicesIdCounter);
+        // btnOptions.setAttribute('data-choices-Id', choicesIdCounter);
 
         btnBlock.appendChild(btnOptions);
     }
 
-    choicesIdCounter++;
+    // choicesIdCounter++;
     currentQuestion++;
 
 }
 
 function saveScore(){
+    //captures the value of form input
     var initialValue = document.querySelector(".initialInput").value;
 
+    //creates object to store initials and score
     var score= {
         score: currentScore,
         initials: initialValue,
     };
 
+    //pushes score to savedScore array, sorts based off of value, saves top 5 scores
     savedScores.push(score);
     savedScores.sort((a, b) => b.score - a.score)
     savedScores.splice(5);
@@ -167,19 +168,22 @@ function saveScore(){
 };
 
 function endQuiz(){
+    //calculates final score
     currentScore = (correctQuestions*10)+(timeLeft+1);
 
-    // startText.textContent = "The quiz is over! lets see how you did!";
-
+    //removes answer choices
     while (buttons.firstChild){
         buttons.removeChild(buttons.firstChild);
     }
 
     var endBtn = document.createElement("button");
 
+    //if points are scored..
     if(currentScore > 0){
+        //...displays message...
         startText.textContent = "Congrats! you scored a total of " + currentScore + " Points! Enter your initials and click the button below to save your score!"
         
+        //..creates form and adds initial input element and save button
         var formEl = document.createElement("form");
 
         var initialEl = document.createElement("input");
@@ -197,50 +201,66 @@ function endQuiz(){
         questionText.appendChild(formEl);
 
         endBtn.onclick = function(){
+            //alerts if no initials are entered
             if(!initialEl.value){
                 window.alert("Please Enter your initials to save your score");
             }
+            //if initials are entered, saves score and goes to highscore screen
             else{
                 saveScore();
+                location.href = "./highscores.html";
             };
         };
 
     } else{
+        //If no points are scored displays message and sets button text
         startText.textContent= "Sorry! You did not score any points. Click the button below if you would like to try again!"
         endBtn.textContent = "Click here to restart the quiz"
         endBtn.className = "restartBtn"
         btnBlock.appendChild(endBtn);
 
+        //when clicked, taken back to landing screen
         endBtn.onclick = function(){
             window.location.reload();
         };
     }
 };
 
-
-startBtnEl.addEventListener("click", function(){
-    startBtnEl.setAttribute("style", "display: none");
-    countdown();
-    formQuestion();
-});
-
+//listens for "bubbling" click event
 buttons.addEventListener("click", event =>{
     var index= currentQuestion - 1;
+
+    //creates p element for correct or incorrect answer
+    var result= document.createElement("p");
+    result.className = "result";
     
-
-    if(event.target.textContent === questions[index].answer){
-        correctQuestions++;
-        console.log(correctQuestions);
-    };
-
-   
+    //clears previous questions choices, increases questions answered, and calls function to load next question
     if(event.target.className === "answerChoices"){
         while (buttons.firstChild){
             buttons.removeChild(buttons.firstChild);
         }
+        landingTextEl.removeChild(landingTextEl.lastChild);
         questionsAnswered++;
         formQuestion();
-    };   
+    };
+
+    //starts quiz if start button is clicked
+    if(event.target === startBtnEl){
+        startBtnEl.setAttribute("style", "display: none");
+        countdown();
+        formQuestion();
+    //if correct answer is clicked, increases score and displays correct message
+    } else if(event.target.textContent === questions[index].answer){
+        correctQuestions++;
+        result.textContent = "Correct!"
+        landingTextEl.appendChild(result);
+        console.log(correctQuestions);
+    //if incorrect button is clicked, displays incorrect message and deducts 10 seconds from time remaining
+    } else{
+        timeLeft = timeLeft - 10;
+        result.textContent = "Incorrect"
+        landingTextEl.appendChild(result);
+    }; 
 });
 
 
